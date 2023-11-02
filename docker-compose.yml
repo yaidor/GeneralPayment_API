@@ -14,9 +14,12 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - DATABASE=postgres
-      - URL_TOKEN=https://dev.developers-test.currencybird.cl/token?email=
-      - URL_GET_PAYMENT=https://dev.developers-test.currencybird.cl/getPayment?email=
-      - URL_MAKE_PAYMENT=https://dev.developers-test.currencybird.cl/payment?email=
+      - URL_TOKEN_DEV=https://dev.developers-test.currencybird.cl/token?email=
+      - URL_GET_PAYMENT_DEV=https://dev.developers-test.currencybird.cl/getPayment?email=
+      - URL_MAKE_PAYMENT_DEV=https://dev.developers-test.currencybird.cl/payment?email=
+      - URL_TOKEN_PROD=https://prod.developers-test.currencybird.cl/token?email=
+      - URL_GET_PAYMENT_PROD=https://prod.developers-test.currencybird.cl/payment?email=
+      - URL_MAKE_PAYMENT_PROD=https://prod.developers-test.currencybird.cl/payment?email=
     depends_on:
       - db
   db:
