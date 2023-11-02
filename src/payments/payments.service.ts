@@ -21,8 +21,8 @@ export class PaymentsService {
     }
 
     // Get one payment by transfer code
-    async findOneByTransferCode(trasnferCode: string): Promise<Payment> {
-        return await this.paymentsRepository.findOne({ where: { trasnferCode } });
+    async findOneByTransferCode(transferCode: string): Promise<Payment> {
+        return await this.paymentsRepository.findOne({ where: { transferCode } });
     }
 
     // Create a payment

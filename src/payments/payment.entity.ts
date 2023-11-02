@@ -6,7 +6,7 @@ export class Payment {
   id: number;
 
   @PrimaryColumn()
-  trasnferCode: string;
+  transferCode: string;
 
   @Column()
   amount: number;

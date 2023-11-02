@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, NotFoundException, BadRequestException, ForbiddenException, InternalServerErrorException } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { Payment } from './payment.entity';
 
@@ -31,18 +31,18 @@ export class PaymentsController {
             const token = await this.getToken(payment.email);
             // if token is equal to 'email without token' then throw error
             if (token == 'email without token') {
-                throw new Error('email without token')
+                throw new InternalServerErrorException('email without token')
             } else {
-                const paymentDone = await this.paymentsService.findOneByTransferCode(payment.trasnferCode);
+                const paymentDone = await this.paymentsService.findOneByTransferCode(payment.transferCode);
                 if (paymentDone) {
-                    throw new Error('Payment already done')
+                    throw new ForbiddenException('Payment already done')
                 } else {
                     try{
-                        const paymentMade = await this.makePayment(token, payment.trasnferCode, payment.amount, payment.email);
-                        if (paymentMade && paymentMade.transferCode == payment.trasnferCode) {
+                        const paymentMade = await this.makePayment(token, payment.transferCode, payment.amount, payment.email);
+                        if (paymentMade && paymentMade.transferCode == payment.transferCode) {
                             return await this.paymentsService.create(payment);
                         } else {
-                            throw new Error('Payment not made')
+                            throw new InternalServerErrorException('Payment not made')
                         }
                     } catch (error) {
                         throw new BadRequestException('Data respose: "'+error.response.data+'" Status response: '+error.response.status+' Status text: '+error.response.statusText+' Config URL: '+error.response.config.url+' Config method: '+error.response.config.method+' Config headers: '+error.response.config.headers+' Config data: '+error.response.config.data);
@@ -78,7 +78,7 @@ export class PaymentsController {
 
     async getToken(email: string): Promise<string> {
         try {
-            const response = await axios.get(process.env.URL_TOKEN+email)
+            const response = await axios.get(process.env.URL_TOKEN_PROD+email)
             const data = response.data;
             return data;
         } catch (error) {
@@ -86,9 +86,9 @@ export class PaymentsController {
         }
     }
 
-    async getPayment(token: string, trasnferCode: string, email: string): Promise<string> {
+    async getPayment(token: string, transferCode: string, email: string): Promise<string> {
         try {
-            const response = await axios.get(process.env.URL_GET_PAYMENT+email+'&transferCode='+trasnferCode,{
+            const response = await axios.get(process.env.URL_GET_PAYMENT_PROD+email+'&transferCode='+transferCode,{
                 headers: {
                     'Authorization': token
                 }
@@ -100,14 +100,17 @@ export class PaymentsController {
         }
     }
 
-    async makePayment(token: string, trasnferCode: string, amount: number, email: string): Promise<any> {
+    async makePayment(token: string, transferCode: string, amount: number, email: string): Promise<any> {
+        const data_payment = {
+            transferCode: transferCode,
+            amount: amount
+        }
+        console.log(data_payment);
         try {
-            const response = await axios.post(process.env.URL_MAKE_PAYMENT+email+'&transferCode='+trasnferCode,{
-                trasnferCode: trasnferCode,
-                amount: amount
-            },{
+            const response = await axios.post(process.env.URL_MAKE_PAYMENT_PROD+email+'&transferCode='+transferCode,data_payment,{
                 headers: {
-                    'Authorization': token
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
                 }
             })
             const data = response.data;
