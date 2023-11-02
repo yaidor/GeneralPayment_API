@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  generalpayment:
+    container_name: generalpayment
+    image: yaidor/generalpayment:1.0.0
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DATABASE=postgres
+      - URL_TOKEN=https://dev.developers-test.currencybird.cl/token?email=
+      - URL_GET_PAYMENT=https://dev.developers-test.currencybird.cl/getPayment?email=
+      - URL_MAKE_PAYMENT=https://dev.developers-test.currencybird.cl/payment?email=
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
