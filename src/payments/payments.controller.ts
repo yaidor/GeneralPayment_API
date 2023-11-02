@@ -78,7 +78,7 @@ export class PaymentsController {
 
     async getToken(email: string): Promise<string> {
         try {
-            const response = await axios.get(process.env.URL_TOKEN_PROD+email)
+            const response = await axios.get(process.env.URL_TOKEN+email)
             const data = response.data;
             return data;
         } catch (error) {
@@ -88,7 +88,7 @@ export class PaymentsController {
 
     async getPayment(token: string, transferCode: string, email: string): Promise<string> {
         try {
-            const response = await axios.get(process.env.URL_GET_PAYMENT_PROD+email+'&transferCode='+transferCode,{
+            const response = await axios.get(process.env.URL_GET_PAYMENT+email+'&transferCode='+transferCode,{
                 headers: {
                     'Authorization': token
                 }
@@ -107,7 +107,7 @@ export class PaymentsController {
         }
         console.log(data_payment);
         try {
-            const response = await axios.post(process.env.URL_MAKE_PAYMENT_PROD+email+'&transferCode='+transferCode,data_payment,{
+            const response = await axios.post(process.env.URL_MAKE_PAYMENT+email+'&transferCode='+transferCode,data_payment,{
                 headers: {
                     'Authorization': token,
                     'Content-Type': 'application/json'
