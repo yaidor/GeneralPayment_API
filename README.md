@@ -39,7 +39,7 @@ Tener en consideración que el método pos solo permite realizar un solo pago, e
 El request body:
 ```JSON
 {
-    "trasnferCode": "matias.venegas93@gmail.com",
+    "transferCode": "matias.venegas93@gmail.com",
     "amount": 5000,
     "email": "matias.venegas93@gmail.com",
     "currency":"USD"
@@ -55,7 +55,7 @@ donde 2 corresponde a la id de la transacción, escalable para utilizar `trasnfe
 Se retornará una lista (vacía en caso de no tener transacciones) si no se especifica la id. En caso de buscar un único objeto retorna el objeto completo:
 ```JSON
 {
-    "trasnferCode": "matias.venegas93@gmail.com",
+    "transferCode": "matias.venegas93@gmail.com",
     "amount": 5000,
     "email": "matias.venegas93@gmail.com",
     "currency":"USD"
@@ -76,7 +76,7 @@ localhost:3000/payments/2
 dónde 2 es la id de la transacción, escalable para utilizar `transferCode` ya que es único.
 ```JSON
 {
-    "trasnferCode": "matias.venegas93@gmail.com",
+    "transferCode": "matias.venegas93@gmail.com",
     "amount": 500,
     "email": "matias.venegas93@gmail.com",
     "currency":"CLP"
