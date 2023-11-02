@@ -35,6 +35,7 @@ El llamado debe ser de la siguiente manera
 ```bash
 localhost:3000/payments
 ```
+Tener en consideración que el método pos solo permite realizar un solo pago, es posible reutilizar el método eliminando de la base de datos el valor generado al momento de realizar correctamente el pago.
 El request body:
 ```JSON
 {
