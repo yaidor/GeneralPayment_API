@@ -1,73 +1,97 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# GeneralPayment API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta api se trabaja con la base del frame work [NestJS](https://nestjs.com/) un framework basado en [NodeJS](https://nodejs.org/)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Para poder correr esta api es necesario tener en consideración que se usa Node, [TypeORM](https://typeorm.io/), [Docker](https://www.docker.com/) y [PostgreSQL](https://www.postgresql.org/)
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
+## Instalación
+Es necesario tener instalado NestJS: 
 ```bash
-$ npm install
+npm i -g @nestjs/cli
 ```
 
-## Running the app
-
+Para el correcto funcionamiento es necesario correr el contenedor de docker:
 ```bash
-# development
-$ npm run start
+docker compose up -d db
+docker compose build
+docker compose up
+```
+Se implementa primero db ya que el contenedor de la API en si depende de ella.
 
-# watch mode
-$ npm run start:dev
+## Funcionamiento
+Para realizar las acciones de la api basta con utilizar [Postman](https://www.postman.com/downloads/)
 
-# production mode
-$ npm run start:prod
+Si se quiere utilizar para pruebas en desarrollo o producción es necesario realizar cambios a las variables a utilizar en el archivo `src\payments\payments.controller.ts`
+Las variables son:
+```bash
+URL_TOKEN_DEV <--> URL_TOKEN_PROD
+URL_GET_PAYMENT_DEV <--> URL_GET_PAYMENT_PROD
+URL_GET_PAYMENT_DEV <--> URL_GET_PAYMENT_PROD
 ```
 
-## Test
-
+### Métodos
+- Post:
+El llamado debe ser de la siguiente manera
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+localhost:3000/payments
 ```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+Tener en consideración que el método pos solo permite realizar un solo pago, es posible reutilizar el método eliminando de la base de datos el valor generado al momento de realizar correctamente el pago.
+El request body:
+```JSON
+{
+    "trasnferCode": "matias.venegas93@gmail.com",
+    "amount": 5000,
+    "email": "matias.venegas93@gmail.com",
+    "currency":"USD"
+}
+```
+- Get: El método get puede ser llamado para obtener todas las transacciones o transacciones únicas
+```bash
+localhost:3000/payments
+#or
+localhost:3000/payments/2
+```
+donde 2 corresponde a la id de la transacción, escalable para utilizar `trasnferCode` ya que es único.
+Se retornará una lista (vacía en caso de no tener transacciones) si no se especifica la id. En caso de buscar un único objeto retorna el objeto completo:
+```JSON
+{
+    "trasnferCode": "matias.venegas93@gmail.com",
+    "amount": 5000,
+    "email": "matias.venegas93@gmail.com",
+    "currency":"USD"
+}
+```
+o de no entrontrase se arroja el error:
+```JSON
+{
+    "message": "Payment does not exist!",
+    "error": "Not Found",
+    "statusCode": 404
+}
+```
+- Put: Éste método es utilizado para actualizar transacciones, es necesario ingresar la id como parámetro y el body para actualizar
+```bash
+localhost:3000/payments/2
+```
+dónde 2 es la id de la transacción, escalable para utilizar `transferCode` ya que es único.
+```JSON
+{
+    "trasnferCode": "matias.venegas93@gmail.com",
+    "amount": 500,
+    "email": "matias.venegas93@gmail.com",
+    "currency":"CLP"
+}
+```
+retornando el mismo valor enviado. 
+- Delete: Éste método es para eliminar alguna transacción, es necesario especificar la id de la transacción (puede ser escalable para el uso de `trasnferCode`)
+```bash
+localhost:3000/payments/2
+```
+No retorna un valor al eliminar. Solo retornará un error de no encontrar la transacción:
+```JSON
+{
+    "message": "Payment does not exist!",
+    "error": "Not Found",
+    "statusCode": 404
+}
+```
