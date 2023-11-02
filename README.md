@@ -21,6 +21,14 @@ Se implementa primero db ya que el contenedor de la API en si depende de ella.
 ## Funcionamiento
 Para realizar las acciones de la api basta con utilizar [Postman](https://www.postman.com/downloads/)
 
+Si se quiere utilizar para pruebas en desarrollo o producción es necesario realizar cambios a las variables a utilizar en el archivo `src\payments\payments.controller.ts`
+Las variables son:
+```bash
+URL_TOKEN_DEV <--> URL_TOKEN_PROD
+URL_GET_PAYMENT_DEV <--> URL_GET_PAYMENT_PROD
+URL_GET_PAYMENT_DEV <--> URL_GET_PAYMENT_PROD
+```
+
 ### Métodos
 - Post:
 El llamado debe ser de la siguiente manera
