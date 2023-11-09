@@ -45,6 +45,7 @@ export class PaymentsController {
                             throw new InternalServerErrorException('Payment not made')
                         }
                     } catch (error) {
+                        console.log(error);
                         throw new BadRequestException('Data respose: "'+error.response.data+'" Status response: '+error.response.status+' Status text: '+error.response.statusText+' Config URL: '+error.response.config.url+' Config method: '+error.response.config.method+' Config headers: '+error.response.config.headers+' Config data: '+error.response.config.data);
                     }
                 }
